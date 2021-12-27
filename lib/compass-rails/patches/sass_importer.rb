@@ -69,13 +69,13 @@ klass.class_eval do
 
   # if using haml-rails, self.class.parent = Haml::Filters (which doesn't have an implementation)
   def sass_importer_class
-    @sass_importer_class ||= if defined?(self.class.parent::SassImporter)
-                               self.class.parent::SassImporter
-                             elsif defined?(Sass::Rails::SassTemplate)
-                               Sass::Rails::SassImporter
-                             else
-                               Sprockets::SassImporter
-                             end
+    @sass_importer_class ||= if defined?(self.class.respond_to?(:module_parent) ? self.class.module_parent::SassImporter : self.class.parent::SassImporter)
+                           self.class.respond_to?(:module_parent) ? self.class.module_parent::SassImporter : self.class.parent::SassImporter
+                         elsif defined?(Sass::Rails::SassTemplate)
+                           Sass::Rails::SassImporter
+                         else
+                           Sprockets::SassImporter
+                         end
   end
 
   def sprockets_cache_store
